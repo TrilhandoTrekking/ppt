@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedra, Papel ou Tesoura</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+      
+    </style>
+</head>
+
+<body>
+    <h1>Pedra, Papel ou Tesoura</h1>
+    <h2 id="frase">Escolha uma opção:</h2>
+
+    <!-- ÁREA DE PONTUAÇÃO -->
+    <div id="pontuacao">
+        <h3>Placar</h3>
+        <p>Você: <span id="pontuacao-jogador">0</span></p>
+        <p>Oponente: <span id="pontuacao-pc">0</span></p>
+    </div>
+
+    <div id="area-escolha">
+        <img id="pedra" onclick="select(0)" src="img/pedra.png" alt="Pedra">
+        <img id="papel" onclick="select(1)" src="img/papel.png" alt="Papel">
+        <img id="tesoura" onclick="select(2)" src="img/tesoura.png" alt="Tesoura">
+    </div>
+
+    <div id="area-resultado">
+        <img id="jogador" src="img/pedra.png" alt="Escolha do jogador">
+        <img id="pc" src="img/pc-papel.png" alt="Escolha do PC">
+        <br>
+        <button id="botao" onclick="recomecar()">Recomeçar</button>
+    </div>
+
+    <div class="footer">
+        <p>Trilhando trekking - Explore e se divirta! 💪 <a href="#">Saiba mais</a></p>
+    </div>
+
+    <script>
+        // ELEMENTOS BÁSICOS DO PROJETO
+        var frase = document.getElementById("frase");
+        var jogador = document.getElementById("jogador");
+        var pc = document.getElementById("pc");
+        var botao = document.getElementById("botao");
+        var areaEscolha = document.getElementById("area-escolha");
+        var areaResultado = document.getElementById("area-resultado");
+        var pontuacaoJogadorElem = document.getElementById("pontuacao-jogador");
+        var pontuacaoPcElem = document.getElementById("pontuacao-pc");
+
+        // IMAGENS DO PROJETO
+        var imagens_jogador = ["img/pedra.png", "img/papel.png", "img/tesoura.png"];
+        var imagens_pc = ["img/pc-pedra.png", "img/pc-papel.png", "img/pc-tesoura.png"];
+
+        // PONTUAÇÃO INICIAL
+        var pontuacaoJogador = 0;
+        var pontuacaoPc = 0;
+
+        // INDICE
+        var index = 0;
+
+        // FUNÇÃO PARA EFEITO DAS IMAGENS
+        function efeitoImagem() {
+            jogador.src = imagens_jogador[index];
+            pc.src = imagens_pc[index];
+
+            index++;
+            if (index === 3) {
+                index = 0;
+            }
+        }
+
+        // CHAMADA DO EFEITO DE ESCOLHA
+        var efeito = setInterval(efeitoImagem, 100);
+
+        // FUNÇÃO PRINCIPAL DE SELEÇÃO
+        function select(escolhaJogador) {
+            // ESCONDER ÁREA DE OPÇÕES
+            areaEscolha.style.display = 'none';
+
+            // MOSTRAR A ÁREA DE ANIMAÇÃO
+            areaResultado.style.display = 'block';
+
+            // COMEÇAR CONTADOR EM 3
+            frase.textContent = '3';
+
+            // ATIVAR CRONÔMETRO
+            var tempo = setInterval(() => {
+                var cronometro = parseInt(frase.textContent);
+                cronometro--;
+                frase.textContent = cronometro;
+
+                // PARAR QUANDO CHEGAR EM ZERO
+                if (cronometro === 0) {
+                    clearInterval(tempo);
+                    clearInterval(efeito);
+                }
+            }, 1000);
+
+            // REGRAS DO JOGO
+            setTimeout(() => {
+                // RANDOMIZAR A ESCOLHA DO PC
+                var escolhaPC = Math.floor(Math.random() * 3);
+
+                // MOSTRAR ESCOLHA DO PC E DO JOGADOR
+                pc.src = imagens_pc[escolhaPC];
+                jogador.src = imagens_jogador[escolhaJogador];
+
+                // VERIFICAR RESULTADO
+                if (escolhaJogador === escolhaPC) {
+                    frase.textContent = 'Empatou!';
+                } else if (
+                    (escolhaJogador === 0 && escolhaPC === 2) || // Pedra vence Tesoura
+                    (escolhaJogador === 1 && escolhaPC === 0) || // Papel vence Pedra
+                    (escolhaJogador === 2 && escolhaPC === 1)    // Tesoura vence Papel
+                ) {
+                    frase.textContent = 'Você Venceu!';
+                    pontuacaoJogador++;
+                    pontuacaoJogadorElem.textContent = pontuacaoJogador;
+                } else {
+                    frase.textContent = 'Oponente Venceu!';
+                    pontuacaoPc++;
+                    pontuacaoPcElem.textContent = pontuacaoPc;
+                }
+
+                botao.style.display = 'block';
+            }, 3000);
+        }
+		
+		 
+
+        // FUNÇÃO PARA RECOMEÇAR O JOGO
+        function recomecar() {
+            // REEXIBIR A ÁREA DE ESCOLHAS
+            areaEscolha.style.display = 'block';
+
+            // ESCONDER A ÁREA DE RESULTADO
+            areaResultado.style.display = 'none';
+
+            // REINICIAR FRASE
+            frase.textContent = 'Escolha uma opção:';
+
+            // REINICIAR ANIMAÇÃO DAS IMAGENS
+            efeito = setInterval(efeitoImagem, 100);
+        }
+    </script>
+
+</body>
+
+</html>
